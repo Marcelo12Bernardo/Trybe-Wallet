@@ -1,79 +1,86 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { getEmail } from '../redux/actions/index';
+import { fetchCurrency, getEmail } from '../redux/actions';
 
 class Login extends React.Component {
   state = {
     email: '',
     password: '',
-    isDisabled: true,
+    isDisable: true,
+  };
+
+  handleChange = ({ target: { name, value } }) => {
+    this.setState(
+      { [name]: value },
+      this.validForm,
+    );
   };
 
   handleClick = () => {
     const { history, dispatch } = this.props;
     const { email } = this.state;
-    history.push('/carteira');
-    return dispatch(getEmail(email));
+    dispatch(getEmail({ email, password }));
+    dispatch(fetchCurrency());
+    return history.push('/carteira');
   };
 
-  handleChange = ({ target: { name, value } }) => {
-    this.setState({
-      [name]: value,
-    }, this.validate);
-  };
-
-  validate = () => {
+  validForm = () => {
     const { email, password } = this.state;
-    const minCharacter = 6;
-    const passwordValidate = password.length >= minCharacter;
-    const emailValidate = (/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/).test(email);
-    this.setState({ isDisabled: !(passwordValidate && emailValidate) });
+    const regex = /\S+@\S+\.\S+/i;
+    const minLength = 5;
+
+    if (regex.test(email) && password.length > minLength) {
+      this.setState({ isDisable: false });
+      return;
+    }
+    this.setState({ isDisable: true });
   };
 
   render() {
-    const { email, password, isDisabled } = this.state;
+    const { email, password, isDisable } = this.state;
     return (
       <div>
-        <from>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            value={ email }
-            onChange={ this.handleChange }
-            data-testid="email-input"
-          />
-          <input
-            id="password"
-            name="password"
-            type="password"
-            value={ password }
-            onChange={ this.handleChange }
-            data-testid="password-input"
-          />
-          <button
-            type="button"
-            disabled={ isDisabled }
-            onClick={ this.handleClick }
-          >
-            Entrar
-          </button>
-        </from>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value={ email }
+          placeholder="email"
+          onChange={ this.handleChange }
+          data-testid="email-input"
+        />
+        <input
+          id="password"
+          name="password"
+          type="password"
+          value={ password }
+          placeholder="senha"
+          onChange={ this.handleChange }
+          data-testid="password-input"
+        />
+        <button
+          type="button"
+          disabled={ isDisable }
+          onClick={ this.handleClick }
+        >
+          Entrar
+        </button>
       </div>
     );
   }
 }
 
-// const mapStateToProps = (state) => ({
-//   userEmail: state.user.email,
-// });
-
 Login.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  dispatch: PropTypes.func,
   history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
+    push: PropTypes.func,
+  }),
+};
+
+Login.defaultProps = {
+  history: '',
+  dispatch: '',
 };
 
 export default connect()(Login);
