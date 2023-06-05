@@ -19,7 +19,7 @@ class Login extends React.Component {
 
   handleClick = () => {
     const { history, dispatch } = this.props;
-    const { email } = this.state;
+    const { email,password  } = this.state;
     dispatch(getEmail({ email, password }));
     dispatch(fetchCurrency());
     return history.push('/carteira');
