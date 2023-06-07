@@ -45,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@sheerun/mutationobserver-shim": "0.3.3",
     "cypress": "10.11.0",
     "cypress-multi-reporters": "1.6.2",
