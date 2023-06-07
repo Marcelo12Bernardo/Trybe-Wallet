@@ -22,7 +22,7 @@ class Login extends React.Component {
     const { email,password  } = this.state;
     dispatch(getEmail({ email, password }));
     dispatch(fetchCurrency());
-    return history.push('/carteira');
+    return history.push('/Trybe-Wallet/carteira');
   };
 
   validForm = () => {
